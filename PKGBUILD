@@ -7,6 +7,7 @@
 # Contributor: goekce (github.com/goekce)
 # Contributor: David Castellon (github.com/bobosito000)
 # Contributor: Yannic Wehner <yannic.wehner@gmail.com> (github.com/ElCap1tan)
+# Contributor: Krishna Shah <kshahusa@gmail.com> (github.com/DragonflyRobotics)
 # Acknowledgment: This work is hugely based on `ros2-arch-deps` AUR
 # package, maintained by T. Borgert.
 
@@ -58,11 +59,13 @@ build() {
     ## For people with the old version of makepkg.conf
     unset CPPFLAGS
     ## For people with the new version of makepkg.conf
-    CFLAGS="${CFLAGS//-Wp,-D_FORTIFY_SOURCE=2[[:space:]]}"
-    CXXFLAGS="${CXXFLAGS//-Wp,-D_FORTIFY_SOURCXXE=2[[:space:]]}"
+    CFLAGS=$(sed "s/-Wp,-D_FORTIFY_SOURCE=[23]\s//g" <(echo $CFLAGS))
+    CXXFLAGS=$(sed "s/-Wp,-D_FORTIFY_SOURCE=[23]\s//g" <(echo $CXXFLAGS))
+    echo "CFLAGS: $CFLAGS"
+    echo "CXXFLAGS: $CXXFLAGS"
 
     # Build
-    colcon build --merge-install ${_colcon_extra_args} --packages-skip-by-dep python_qt_binding
+    colcon build --merge-install ${_colcon_extra_args} --packages-skip-by-dep python_qt_binding --cmake-args -DCMAKE_BUILD_TYPE=Release
 }
 
 package() {
